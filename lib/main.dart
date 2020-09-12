@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/answer.dart';
 
-import './questions.dart';
+import './question.dart';
 
 void main() => runApp(MyApp());
 
@@ -18,20 +19,30 @@ class _MyApp extends State<MyApp> {
   void _answerQuestion() {
     setState(() {
       print(_questionIndex);
-      if(_questionIndex == 1){
-        _questionIndex = 0;
-      }else {
-        _questionIndex = 1;
-      }
-      //_questionIndex = _questionIndex + 1;
+      // if (_questionIndex == 1) {
+      //   _questionIndex = 0;
+      // } else {
+      //   _questionIndex = 1;
+      // }
+      _questionIndex = _questionIndex + 1;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    var questions = [
-      'What is your Favorite Color ?',
-      'What is your favorite Animal ?'
+    const questions = [
+      {
+        'questionText': 'What is your Favorite Color ?',
+        'answers': ['Black', 'Red', 'Green', 'Blue']
+      },
+      {
+        'questionText': 'What is your Favorite Animal ?',
+        'answers': ['Rabbit', 'Snack', 'Elephant', 'Lion']
+      },
+      {
+        'questionText': 'Who is your favorite Cricketer ?',
+        'answers': ['Dhoni', 'Raina', 'Sachin', 'Sehwag']
+      },
     ];
     return MaterialApp(
       home: Scaffold(
@@ -40,16 +51,14 @@ class _MyApp extends State<MyApp> {
         ),
         body: Column(
           children: [
-            Questions(questions[_questionIndex]),
-            RaisedButton(child: Text('Answer 1'), onPressed: _answerQuestion),
-            RaisedButton(
-                child: Text('Answer 2'),
-                onPressed: () {
-                  print('Answer 2 Chosen !!');
-                }),
-            RaisedButton(
-                child: Text('Answer 3'),
-                onPressed: () => print('Answer 3 Chosen!!')),
+            // Extracting question list from Map
+            Question(questions[_questionIndex]['questionText']),
+
+            // Creating dynamic widgets for Answer that having RaisedButton
+            ...(questions[_questionIndex]['answers'] as List<String>)
+                .map((answer) {
+              return Answer(_answerQuestion, answer);
+            }).toList()
           ],
         ),
       ),
