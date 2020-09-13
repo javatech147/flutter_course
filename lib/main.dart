@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/answer.dart';
+import 'package:flutter_app/result.dart';
 
-import './question.dart';
+import './quiz.dart';
 
 void main() => runApp(MyApp());
 
@@ -14,54 +14,51 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyApp extends State<MyApp> {
+  final _questions = const [
+    {
+      'questionText': 'What is your Favorite Color ?',
+      'answers': ['Black', 'Red', 'Green', 'Blue']
+    },
+    {
+      'questionText': 'What is your Favorite Animal ?',
+      'answers': ['Rabbit', 'Snack', 'Elephant', 'Lion']
+    },
+    {
+      'questionText': 'Who is your favorite Cricketer ?',
+      'answers': ['Dhoni', 'Raina', 'Sachin', 'Sehwag']
+    },
+  ];
+
   var _questionIndex = 0;
 
   void _answerQuestion() {
     setState(() {
-      print(_questionIndex);
-      // if (_questionIndex == 1) {
-      //   _questionIndex = 0;
-      // } else {
-      //   _questionIndex = 1;
-      // }
       _questionIndex = _questionIndex + 1;
     });
+    print(_questionIndex);
+
+    if (hasMoreQuestions()) {
+      print('We have more Questions');
+    }
+  }
+
+  bool hasMoreQuestions() {
+    return _questionIndex < _questions.length;
   }
 
   @override
   Widget build(BuildContext context) {
-    const questions = [
-      {
-        'questionText': 'What is your Favorite Color ?',
-        'answers': ['Black', 'Red', 'Green', 'Blue']
-      },
-      {
-        'questionText': 'What is your Favorite Animal ?',
-        'answers': ['Rabbit', 'Snack', 'Elephant', 'Lion']
-      },
-      {
-        'questionText': 'Who is your favorite Cricketer ?',
-        'answers': ['Dhoni', 'Raina', 'Sachin', 'Sehwag']
-      },
-    ];
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('My First App'),
-        ),
-        body: Column(
-          children: [
-            // Extracting question list from Map
-            Question(questions[_questionIndex]['questionText']),
-
-            // Creating dynamic widgets for Answer that having RaisedButton
-            ...(questions[_questionIndex]['answers'] as List<String>)
-                .map((answer) {
-              return Answer(_answerQuestion, answer);
-            }).toList()
-          ],
-        ),
-      ),
-    );
+        home: Scaffold(
+            appBar: AppBar(
+              title: Text('My First App'),
+            ),
+            body: hasMoreQuestions() // Ternary operator
+                ? Quiz(
+                    questions: _questions,
+                    answerQuestion: _answerQuestion,
+                    questionIndex: _questionIndex,
+                  )
+                : Result()), );
   }
 }
